@@ -3,91 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo Wii - Personaliza tu Pack</title>
+    <title>Catálogo Wii Digital - Selección Premium</title>
     <style>
         :root {
-            --wii-blue: #009bf0;
-            --wii-gray: #e6e6e6;
+            --wii-blue-glow: #00d2ff; /* Azul neón más brillante */
+            --bg-dark: #121212;
+            --bg-card: #252525;
+            --bg-header: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
             --danger: #ff4444;
             --success: #00c851;
         }
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; margin: 0; padding-bottom: 80px; }
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #000000 100%);
+            color: var(--text-primary);
+            margin: 0; 
+            padding-bottom: 90px; 
+            min-height: 100vh;
+        }
         
-        /* Header Fijo con Barra de Progreso */
+        /* Header Fijo Estilo Dark */
         .sticky-header {
             position: sticky;
             top: 0;
-            background: white;
+            background: var(--bg-header);
             padding: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
             z-index: 1000;
+            border-bottom: 2px solid var(--wii-blue-glow);
         }
-        .stats { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px; }
+        .stats { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 8px; font-size: 14px;}
         .progress-container {
             width: 100%;
-            height: 20px;
-            background-color: #ddd;
+            height: 18px;
+            background-color: #333;
             border-radius: 10px;
             overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
         }
         .progress-bar {
             height: 100%;
-            background-color: var(--success);
-            transition: width 0.3s ease, background-color 0.3s;
+            background: linear-gradient(90deg, var(--success), var(--wii-blue-glow));
+            transition: width 0.4s ease;
+            box-shadow: 0 0 10px var(--wii-blue-glow);
         }
-        .warning { background-color: var(--danger) !important; }
+        .warning { background: linear-gradient(90deg, darkred, var(--danger)) !important; box-shadow: 0 0 10px var(--danger); }
 
-        /* Buscador */
-        .search-container { padding: 15px; text-align: center; }
+        /* Buscador Dark */
+        .search-container { padding: 20px 15px; text-align: center; }
         input[type="text"] {
-            width: 90%; padding: 12px; border-radius: 20px; border: 1px solid #ccc; font-size: 16px;
+            width: 90%; padding: 14px; border-radius: 25px; 
+            border: 2px solid var(--wii-blue-glow);
+            background: var(--bg-card); color: var(--text-primary);
+            font-size: 16px; outline: none;
+            box-shadow: 0 4px 10px rgba(0, 210, 255, 0.1);
         }
+        input[type="text"]::placeholder { color: var(--text-secondary); }
 
-        /* Grilla de Juegos */
+        /* Grilla de Juegos Dark */
         .game-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             gap: 15px;
             padding: 15px;
         }
         
         .game-card {
-            background: white;
-            border-radius: 10px;
+            background: var(--bg-card);
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
             position: relative;
             cursor: pointer;
-            transition: transform 0.2s;
-            border: 3px solid transparent;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 2px solid transparent;
         }
-        .game-card.selected { border-color: var(--wii-blue); transform: scale(0.98); background: #e3f2fd; }
-        .game-card img { width: 100%; aspect-ratio: 0.7; object-fit: cover; }
-        .game-info { padding: 8px; font-size: 12px; }
-        .game-title { font-weight: bold; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .game-size { color: #666; }
+        .game-card:hover { transform: translateY(-3px); }
+        /* Estado Seleccionado */
+        .game-card.selected { 
+            border-color: var(--wii-blue-glow); 
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
+            background: #2a3a44;
+        }
+        .game-card img { width: 100%; aspect-ratio: 0.7; object-fit: cover; display: block; }
+        .game-info { padding: 10px; font-size: 13px; }
+        .game-title { font-weight: bold; margin-bottom: 5px; line-height: 1.2; height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .game-size { color: var(--wii-blue-glow); font-weight: bold; font-size: 11px; }
         
-        /* Checkbox visual */
+        /* Checkbox visual brillante */
         .check-icon {
-            position: absolute; top: 5px; right: 5px; background: var(--wii-blue); color: white;
-            border-radius: 50%; width: 25px; height: 25px; display: none; align-items: center; justify-content: center;
+            position: absolute; top: 8px; right: 8px; 
+            background: var(--wii-blue-glow); color: var(--bg-header);
+            border-radius: 50%; width: 28px; height: 28px; 
+            display: none; align-items: center; justify-content: center;
+            font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
         }
         .game-card.selected .check-icon { display: flex; }
 
         /* Botones Flotantes */
         .action-bar {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: white;
-            padding: 10px; display: flex; gap: 10px; justify-content: center;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            background: var(--bg-header);
+            padding: 12px; display: flex; gap: 10px; justify-content: center;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+            border-top: 1px solid #333;
+            box-sizing: border-box; /* Importante para que no se desborde */
         }
         .btn {
-            padding: 12px 20px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; color: white; flex: 1; max-width: 200px;
+            padding: 12px 15px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; color: white; flex: 1; max-width: 200px; font-size: 14px;
+            transition: opacity 0.2s;
         }
-        .btn-wa { background-color: #25D366; }
-        .btn-fb { background-color: #0084FF; }
+        .btn:active { opacity: 0.8; }
+        .btn-wa { background: linear-gradient(45deg, #25D366, #128C7E); box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); }
+        .btn-fb { background: linear-gradient(45deg, #0084FF, #0056b3); box-shadow: 0 4px 10px rgba(0, 132, 255, 0.3);}
         
-        /* Categorías */
-        .section-title { padding: 0 15px; margin-top: 20px; color: #333; border-left: 5px solid var(--wii-blue); padding-left: 10px; }
+        /* Títulos de Sección */
+        .section-title { 
+            padding: 15px; margin-top: 25px; margin-bottom: 0;
+            color: var(--wii-blue-glow); 
+            text-transform: uppercase; letter-spacing: 1px;
+            border-bottom: 1px solid #333; background: rgba(0,0,0,0.2);
+        }
+        .subtitle { padding: 0 15px; color: var(--text-secondary); font-size: 13px; margin-bottom: 10px;}
 
     </style>
 </head>
@@ -95,65 +134,97 @@
 
     <div class="sticky-header">
         <div class="stats">
-            <span>Espacio Ocupado: <span id="currentSize">0</span> GB</span>
-            <span>Límite: 22 GB</span>
+            <span>💾 Ocupado: <span id="currentSize" style="color: var(--wii-blue-glow)">0</span> GB</span>
+            <span>Máximo: 22 GB</span>
         </div>
         <div class="progress-container">
             <div class="progress-bar" id="progressBar" style="width: 0%"></div>
         </div>
-        <div id="msgLimit" style="color: red; font-size: 12px; text-align: center; display: none;">¡Espacio Lleno! Quita un juego para agregar otro.</div>
+        <div id="msgLimit" style="color: var(--danger); font-weight:bold; font-size: 13px; text-align: center; display: none; margin-top: 5px;">⛔ ¡Espacio Lleno! Quita un juego para agregar otro.</div>
     </div>
 
     <div class="search-container">
-        <input type="text" id="searchInput" placeholder="🔍 Buscar juego (Ej: Mario, Zelda)...">
+        <input type="text" id="searchInput" placeholder="🔍 Busca tu juego favorito...">
     </div>
 
-    <h3 class="section-title">📦 Pack Inicial (Ya instalados)</h3>
+    <h3 class="section-title">⚡ Pack Digital Pre-instalado</h3>
+    <p class="subtitle">Estos son los mejores juegos que ya vienen listos. Puedes desmarcarlos para liberar espacio.</p>
     <div class="game-grid" id="preSelectedGrid"></div>
 
-    <h3 class="section-title">➕ Catálogo Disponible (Añade más)</h3>
+    <h3 class="section-title">🎮 Catálogo Expandido (Compatible con Mando)</h3>
+    <p class="subtitle">Selección de joyas que NO requieren accesorios raros ni MotionPlus obligatorio.</p>
     <div class="game-grid" id="catalogGrid"></div>
 
     <div class="action-bar">
-        <button class="btn btn-fb" onclick="copyOrder()">Copiar para FB</button>
-        <button class="btn btn-wa" onclick="sendWhatsApp()">Pedir por WhatsApp</button>
+        <button class="btn btn-fb" onclick="copyOrder()">📋 Copiar para FB</button>
+        <button class="btn btn-wa" onclick="sendWhatsApp()">🟢 Pedir al WhatsApp</button>
     </div>
 
     <script>
-        // CONFIGURACIÓN: Tu número de celular y límite
-        const MY_PHONE_NUMBER = "51960823533"; // CAMBIA ESTO POR TU NÚMERO
+        // =============================================
+        // CONFIGURACIÓN: PON TU NÚMERO AQUÍ ABAJO 👇
+        // =============================================
+        const MY_PHONE_NUMBER = "51960823533"; // Ej: 51987654321
         const MAX_SIZE_GB = 22.0;
 
-        // BASE DE DATOS DE JUEGOS
-        // ID: Usado para la carátula de GameTDB. size: Peso aproximado en GB (WBFS scrubbing)
+        // BASE DE DATOS CURADA (Excluyendo físicos de la foto y MotionPlus obligatorio)
+        // IDs corregidos para que carguen las imágenes. Tamaños aproximados WBFS.
         const gamesDB = [
-            // --- JUEGOS PRE-SELECCIONADOS ---
+            // --- PACK INICIAL (Corregidos) ---
             { id: 'SF8E01', title: 'Donkey Kong Country Returns', size: 3.4, preSelected: true },
-            { id: 'RDSE70', title: 'Dragon Ball Z: Budokai Tenkaichi 3 (Latino)', size: 4.1, preSelected: true }, // ID genérico usado
+            { id: 'RDSE70', title: 'Dragon Ball Z: Budokai Tenkaichi 3 (Mods Latino)', size: 4.1, preSelected: true },
             { id: 'RM8E01', title: 'Mario Party 8', size: 1.4, preSelected: true },
             { id: 'R4QE01', title: 'Mario Strikers Charged', size: 1.9, preSelected: true },
-            { id: 'RMLESN', title: 'Metal Slug Anthology', size: 0.8, preSelected: true }, // Custom ID o SNK
+            { id: 'RMLE52', title: 'Metal Slug Anthology', size: 0.8, preSelected: true }, // ID Corregido
             { id: 'RB4E08', title: 'Resident Evil 4: Wii Edition', size: 3.8, preSelected: true },
             { id: 'RENE8P', title: 'Sonic and the Black Knight', size: 3.6, preSelected: true },
             { id: 'SB4E01', title: 'Super Mario Galaxy 2', size: 1.3, preSelected: true },
-            { id: 'RZDE01', title: 'The Legend of Zelda: Twilight Princess', size: 1.1, preSelected: true },
+            { id: 'RZDE01', title: 'Zelda: Twilight Princess', size: 1.1, preSelected: true },
 
-            // --- JUEGOS DISPONIBLES (EJEMPLOS PARA LLENAR) ---
-            { id: 'RMGE01', title: 'Super Mario Galaxy 1', size: 3.5, preSelected: false },
-            { id: 'RMCE01', title: 'Mario Kart Wii', size: 2.6, preSelected: false },
-            { id: 'RSBE01', title: 'Super Smash Bros Brawl', size: 6.8, preSelected: false },
-            { id: 'RZOE01', title: 'Zelda: Skyward Sword', size: 3.9, preSelected: false },
-            { id: 'R96E01', title: 'Just Dance 2020', size: 4.2, preSelected: false },
-            { id: 'SOUE01', title: 'Zelda: Breath of the Wild (Mod Wii)', size: 0.0, preSelected: false }, // Broma/Placeholder
-            { id: 'SMNE01', title: 'New Super Mario Bros. Wii', size: 0.4, preSelected: false },
-            { id: 'RSPE01', title: 'Wii Sports', size: 0.3, preSelected: false },
-            { id: 'RSP01', title: 'Wii Sports Resort', size: 0.8, preSelected: false },
+            // --- CATÁLOGO EXPANDIDO (Compatible Mando Normal) ---
+            // Peleas y Acción
+            { id: 'RSBE01', title: 'Super Smash Bros. Brawl', size: 6.9, preSelected: false },
+            { id: 'RTKE08', title: 'Tatsunoko vs. Capcom', size: 1.4, preSelected: false },
+            { id: 'RVOE01', title: 'Muramasa: The Demon Blade', size: 0.7, preSelected: false },
+            { id: 'RJ2E52', title: 'Call of Duty: Modern Warfare 3', size: 4.0, preSelected: false },
+            { id: 'RGQE08', title: 'GoldenEye 007', size: 3.7, preSelected: false },
+            { id: 'RPBE01', title: 'Punch-Out!!', size: 3.8, preSelected: false },
+            { id: 'RNOE01', title: 'No More Heroes', size: 2.5, preSelected: false },
+            { id: 'RUZE01', title: 'No More Heroes 2', size: 2.8, preSelected: false },
+            
+            // Aventura y RPG
+            { id: 'SXEE01', title: 'Xenoblade Chronicles', size: 6.5, preSelected: false },
+            { id: 'RLSE64', title: 'The Last Story', size: 5.8, preSelected: false },
+            { id: 'RPDE41', title: 'Pandora\'s Tower', size: 3.2, preSelected: false },
+            { id: 'R3ME01', title: 'Metroid Prime Trilogy', size: 7.8, preSelected: false },
+            { id: 'RQQE01', title: 'Paper Mario: Super Paper Mario', size: 0.5, preSelected: false },
+            { id: 'RKME01', title: 'Kirby\'s Return to Dream Land', size: 1.5, preSelected: false },
+            { id: 'RK5E01', title: 'Kirby\'s Epic Yarn', size: 2.6, preSelected: false },
+            { id: 'R8PE01', title: 'Super Paper Mario', size: 0.4, preSelected: false },
+            { id: 'RWLE01', title: 'Wario Land: Shake It!', size: 3.6, preSelected: false },
+            
+            // Terror y Shooter sobre rieles
+            { id: 'RBUE08', title: 'Resident Evil: The Umbrella Chronicles', size: 3.9, preSelected: false },
+            { id: 'RBDE08', title: 'Resident Evil: The Darkside Chronicles', size: 3.8, preSelected: false },
+            { id: 'RHOE08', title: 'House of the Dead: Overkill', size: 3.7, preSelected: false },
+            { id: 'RDZE08', title: 'Dead Space: Extraction', size: 3.5, preSelected: false },
+            { id: 'SHLE69', title: 'Silent Hill: Shattered Memories', size: 3.7, preSelected: false },
+
+            // Diversión Arcade / Varios
+            { id: 'RMCE01', title: 'Mario Kart Wii (Digital)', size: 2.6, preSelected: false }, // Incluido por si quieren la versión digital aunque tengan la física.
+            { id: 'RSPE01', title: 'Wii Sports (Básico)', size: 0.3, preSelected: false },
             { id: 'RIQE01', title: 'Wii Play', size: 0.1, preSelected: false },
-            { id: 'RPBE01', title: 'Pokemon Battle Revolution', size: 1.2, preSelected: false },
-            { id: 'RKME01', title: 'Kirby\'s Return to Dream Land', size: 1.5, preSelected: false }
+            { id: 'ROWE01', title: 'WarioWare: Smooth Moves', size: 1.9, preSelected: false },
+            { id: 'RYPE01', title: 'Rythm Heaven Fever', size: 0.9, preSelected: false },
+            { id: 'R64E01', title: 'Pac-Man Party', size: 1.2, preSelected: false },
+            { id: 'SNCE8P', title: 'Sonic Colors', size: 3.9, preSelected: false },
+            { id: 'RCAE01', title: 'Captain America: Super Soldier', size: 2.1, preSelected: false },
+            { id: 'SE8E52', title: 'Spider-Man: Shattered Dimensions', size: 3.5, preSelected: false },
+            { id: 'SBLE5G', title: 'Bomberman Land Wii', size: 0.5, preSelected: false },
+            { id: 'RFPESE', title: 'Wii Party (Europa/Español)', size: 1.4, preSelected: false }
         ];
 
-        // Estado de la aplicación
+        // ================= LÓGICA (NO TOCAR) =================
         let selectedGames = gamesDB.filter(g => g.preSelected).map(g => g.id);
         
         function init() {
@@ -164,35 +235,40 @@
         function renderGames() {
             const preGrid = document.getElementById('preSelectedGrid');
             const catGrid = document.getElementById('catalogGrid');
-            const search = document.getElementById('searchInput').value.toLowerCase();
+            const search = document.getElementById('searchInput').value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
             preGrid.innerHTML = '';
             catGrid.innerHTML = '';
 
+            gamesDB.sort((a, b) => a.title.localeCompare(b.title)); // Ordenar alfabéticamente el catálogo extra
+
             gamesDB.forEach(game => {
-                // Filtro de búsqueda
-                if (!game.title.toLowerCase().includes(search)) return;
+                const normalizedTitle = game.title.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                if (!normalizedTitle.includes(search)) return;
 
                 const isSelected = selectedGames.includes(game.id);
                 const card = document.createElement('div');
                 card.className = `game-card ${isSelected ? 'selected' : ''}`;
                 card.onclick = () => toggleGame(game.id);
 
-                // URL de GameTDB para Cover US
+                // Intenta cargar portada US, si falla usa el placeholder
                 const coverUrl = `https://art.gametdb.com/wii/cover/US/${game.id}.png`;
 
                 card.innerHTML = `
                     <div class="check-icon">✓</div>
-                    <img src="${coverUrl}" alt="${game.title}" onerror="this.src='https://via.placeholder.com/150x200?text=No+Cover'">
+                    <img src="${coverUrl}" alt="${game.title}" \
+                        onerror="this.onerror=null;this.src='https://via.placeholder.com/150x210/252525/00d2ff?text=${encodeURIComponent(game.title.substring(0,15))}...';">
                     <div class="game-info">
                         <div class="game-title">${game.title}</div>
-                        <div class="game-size">${game.size} GB</div>
+                        <div class="game-size">📦 ${game.size.toFixed(1)} GB</div>
                     </div>
                 `;
 
-                if (game.preSelected) {
+                if (game.preSelected && selectedGames.includes(game.id)) {
+                     // Si es preseleccionado y sigue seleccionado, va arriba
                     preGrid.appendChild(card);
                 } else {
+                    // Si no, va al catálogo general
                     catGrid.appendChild(card);
                 }
             });
@@ -203,12 +279,10 @@
             const currentTotal = calculateTotalSize();
 
             if (selectedGames.includes(id)) {
-                // Deseleccionar
                 selectedGames = selectedGames.filter(gId => gId !== id);
             } else {
-                // Seleccionar (Verificar espacio)
-                if (currentTotal + game.size > MAX_SIZE_GB) {
-                    alert(`⚠️ ¡Sin espacio! Necesitas ${game.size}GB libres. Desmarca otros juegos primero.`);
+                if (currentTotal + game.size > MAX_SIZE_GB + 0.1) { // Pequeño margen de error
+                    alert(`⛔ ESPACIO INSUFICIENTE\n\nNecesitas ${game.size}GB libres.\n\nDesmarca algún juego del "Pack Inicial" o del catálogo para hacer espacio.`);
                     return;
                 }
                 selectedGames.push(id);
@@ -230,9 +304,9 @@
             
             document.getElementById('currentSize').innerText = total.toFixed(1);
             const bar = document.getElementById('progressBar');
-            bar.style.width = `${percentage}%`;
+            bar.style.width = `${Math.min(percentage, 100)}%`;
             
-            if (percentage >= 100) {
+            if (total >= MAX_SIZE_GB) {
                 bar.classList.add('warning');
                 document.getElementById('msgLimit').style.display = 'block';
             } else {
@@ -242,32 +316,39 @@
         }
 
         function getOrderText() {
+            const totalSize = calculateTotalSize().toFixed(1);
             const list = selectedGames.map(id => {
                 const g = gamesDB.find(game => game.id === id);
-                return `- ${g.title}`;
+                return `▪️ ${g.title}`;
             }).join('\n');
             
-            return `Hola! 👋 Quiero comprar la Nintendo Wii Mágica con esta configuración de juegos (${calculateTotalSize().toFixed(1)}GB / 22GB):\n\n${list}`;
+            return `👋 Hola! Deseo adquirir la Nintendo Wii Mágica.\n\nHe personalizado mi pack digital (${totalSize}GB de 22GB disponibles) con esta lista de juegos:\n\n${list}\n\nQuedo a la espera para coordinar el pago y entrega. Gracias!`;
         }
 
         function sendWhatsApp() {
+            if (selectedGames.length === 0) {
+                alert("⚠️ Por favor selecciona al menos un juego.");
+                return;
+            }
             const text = encodeURIComponent(getOrderText());
             window.open(`https://wa.me/${MY_PHONE_NUMBER}?text=${text}`, '_blank');
         }
 
         function copyOrder() {
+            if (selectedGames.length === 0) {
+                alert("⚠️ Por favor selecciona al menos un juego.");
+                return;
+            }
             const text = getOrderText();
             navigator.clipboard.writeText(text).then(() => {
-                alert("✅ Lista copiada! Ahora pégala en el chat de Facebook.");
+                alert("✅ ¡Lista copiada al portapapeles!\n\nAhora ve al chat de Facebook Messenger y pégala (Ctrl+V o mantener pulsado) para enviármela.");
+            }).catch(err => {
+                 alert("Error al copiar. Por favor usa el botón de WhatsApp.");
             });
         }
 
-        // Event listener para buscador
         document.getElementById('searchInput').addEventListener('input', renderGames);
-
-        // Iniciar
         init();
     </script>
 </body>
 </html>
-
